@@ -1,13 +1,13 @@
 class MyMap():
     def __init__(self, N, M, x, y, plane, dice):
-        self.N = N
-        self.M = M
-        self.x = x
-        self.y = y
-        self.plane = plane
-        self.dice = dice
-        self.results = []
-        if self.plane[y][x] != 0:
+        self.N = N     # 세로 크기
+        self.M = M     # 가로 크기
+        self.x = x     # x 좌표
+        self.y = y     # y 좌표
+        self.plane = plane  # 평면
+        self.dice = dice    # 주사위
+        self.results = []   # 결과
+        if self.plane[y][x] != 0:   # 평면의 숫자가 0이 아닐 경우 주사위의 바닥에 숫자를 입력
             self.dice.setBottom(self.plane[y][x])
             self.plane[y][x] = 0
 
@@ -53,38 +53,36 @@ class Dice():
     def setBottom(self, value):
         self.dice[3][1] = value
 
-    def getNextCommand(self):
-        self.index += 1
-        if not self.index == len(self.commands):
-            return self.commands[self.index]
-        else:
-            return None
-
     def command(self, command, plane):
         for y in range(4):
             for x in range(3):
                 self.temp[y][x] = self.dice[y][x]
         if command == 1:
+            # 동
             self.dice[1][0] = self.temp[3][1]
             self.dice[1][1] = self.temp[1][0]
             self.dice[1][2] = self.temp[1][1]
             self.dice[3][1] = self.temp[1][2]
         elif command == 2:
+            # 서
             self.dice[1][0] = self.temp[1][1]
             self.dice[1][1] = self.temp[1][2]
             self.dice[1][2] = self.temp[3][1]
             self.dice[3][1] = self.temp[1][0]
         elif command == 3:
+            # 북
             self.dice[0][1] = self.temp[1][1]
             self.dice[1][1] = self.temp[2][1]
             self.dice[2][1] = self.temp[3][1]
             self.dice[3][1] = self.temp[0][1]
         elif command == 4:
+            # 남
             self.dice[0][1] = self.temp[3][1]
             self.dice[1][1] = self.temp[0][1]
             self.dice[2][1] = self.temp[1][1]
             self.dice[3][1] = self.temp[2][1]
-        if plane:
+        if plane: 
+            # 주사위와 접촉하는 면이 0이 아닐 경우
             self.dice[3][1] = plane
             return 0
         else:
@@ -105,4 +103,4 @@ if __name__=='__main__':
         myMap.command(commands[i])
     results = myMap.getResults()
     for result in results:
-        print('{0}\n'.format(result), end="")
+        print(result)
