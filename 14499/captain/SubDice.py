@@ -1,3 +1,5 @@
+import sys
+
 class MyMap():
     def __init__(self, N, M, x, y, plane, dice):
         self.N = N     # 세로 크기
@@ -32,13 +34,8 @@ class MyMap():
                 self.y += 1
             else:
                 return
-        else:
-            return
         self.plane[self.y][self.x] = self.dice.command(command, self.plane[self.y][self.x])
-        self.results.append(self.dice.getUpper())
-    
-    def getUpper(self):
-        return self.dice.getUpper()
+        self.results.append(self.dice.getTop())
 
     def getResults(self):
         return self.results
@@ -48,7 +45,6 @@ class Dice():
         self.dice = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
         self.temp = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]]
         self.top = (1, 1)
-        self.bottom = (3, 1)
     
     def setBottom(self, value):
         self.dice[3][1] = value
@@ -88,15 +84,15 @@ class Dice():
         else:
             return self.dice[3][1]
     
-    def getUpper(self):
+    def getTop(self):
         return self.dice[1][1]
 
 if __name__=='__main__':
-    N, M, x, y, count = map(int, input().strip().split(' '))
+    N, M, x, y, count = map(int, sys.stdin.readline().strip().split(' '))
     plane = []
     for _ in range(N):
-        plane.append(list(map(int, input().strip().split(' '))))
-    commands = list(map(int, input().strip().split(' ')))
+        plane.append(list(map(int, sys.stdin.readline().strip().split(' '))))
+    commands = list(map(int, sys.stdin.readline().strip().split(' ')))
     dice = Dice()
     myMap = MyMap(N, M, x, y, plane, dice)
     for i in range(count):

@@ -4,7 +4,7 @@ class CabbageWorm():
         self.N = N
         self.plane = plane
         self.wormCount = 0
-        self.queue = []
+        self.stack = []
         
     def verify(self):
         # 검증
@@ -12,32 +12,29 @@ class CabbageWorm():
             for x in range(self.M):
                 if self.plane[y][x] == 1:
                     self.wormCount += 1
-                    self.queue.append([x, y])
-                    while self.queue:
+                    self.stack.append([x, y])
+                    while self.stack:
                         self.move()
 
     def move(self):
-        x = self.queue[-1:][0][0]
-        y = self.queue[-1:][0][1]
+        x = self.stack[-1:][0][0]
+        y = self.stack[-1:][0][1]
         if not self.plane[y][x] == 0:
             self.plane[y][x] = 0
         # 위쪽으로 이동할 수 있는 경우 이동
         if not y - 1 < 0 and self.plane[y - 1][x] != 0:
-            self.queue.append([x, y - 1])
-            return
+            self.stack.append([x, y - 1])
         # 왼쪽으로 이동할 수 있는 경우 이동
-        if not x - 1 < 0 and self.plane[y][x - 1] != 0:
-            self.queue.append([x - 1, y])
-            return
+        elif not x - 1 < 0 and self.plane[y][x - 1] != 0:
+            self.stack.append([x - 1, y])
         # 아래쪽으로 이동할 수 있는 경우 이동
-        if not y + 1 == N and self.plane[y + 1][x] != 0:
-            self.queue.append([x, y + 1])
-            return
+        elif not y + 1 == N and self.plane[y + 1][x] != 0:
+            self.stack.append([x, y + 1])
         # 오른쪽으로 이동할 수 있는 경우 이동
-        if not x + 1 == M and self.plane[y][x + 1] != 0:
-            self.queue.append([x + 1, y])
-            return
-        self.queue.pop()
+        elif not x + 1 == M and self.plane[y][x + 1] != 0:
+            self.stack.append([x + 1, y])
+        else:
+            self.stack.pop()
     
     def getWormCount(self):
         return self.wormCount
