@@ -1,3 +1,5 @@
+import sys
+
 class DragonCurve():
     def __init__(self):
         self.plane = []
@@ -28,8 +30,6 @@ class DragonCurve():
                 stack.append(d)
     
     def getCount(self):
-        # for plane in self.plane:
-        #     print(plane)
         for y in range(100):
             for x in range(100):
                 if self.plane[y][x] == 1:
@@ -38,16 +38,9 @@ class DragonCurve():
         return self.count
 
 if __name__=='__main__':
-    results = []
-    with open('../input.txt', 'r') as f:
-        testNum = int(f.readline())
-        for _ in range(testNum):
-            dragonCurve = DragonCurve()
-            N = int(f.readline())
-            for _ in range(N):
-                x, y, d, g = map(int, f.readline().strip().split(' '))
-                dragonCurve.setDragon(x, y, d, g)
-            results.append(dragonCurve.getCount())
-    for result in results:
-        print(result)
-            
+    dragonCurve = DragonCurve()
+    N = int(sys.stdin.readline())
+    for _ in range(N):
+        x, y, d, g = map(int, sys.stdin.readline().strip().split(' '))
+        dragonCurve.setDragon(x, y, d, g)
+    print(dragonCurve.getCount())
