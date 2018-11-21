@@ -15,6 +15,8 @@ class Find():
         print(self.search)
 
 
+
+
 if __name__=='__main__':
     with open('../input.txt', 'r') as f:
         count = int(f.readline())
