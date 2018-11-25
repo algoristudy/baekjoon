@@ -1,0 +1,1 @@
+[9251번 문제](https://www.acmicpc.net/problem/9251)

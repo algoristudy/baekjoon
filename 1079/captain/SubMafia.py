@@ -1,71 +1,80 @@
 import sys
-
-class Mafia():
-    def __init__(self, playerCount, scores, relativeScore, playerIndex):
-        self.playerCount = playerCount
-        self.scores = scores
-        self.relativeScore = relativeScore
-        self.playerIndex = playerIndex
-        self.select = [52] * self.playerCount
-        for i in range(self.playerCount):
-            if i != self.playerIndex:
-                for j in range(self.playerCount):
-                    if j != self.playerIndex and i != j:
-                        diff = self.relativeScore[i][j] - self.relativeScore[i][self.playerIndex]
-                        # print('i : ', i, ', j : ', j, ', diff : ', diff)
-                        if self.select[i] > diff:
-                            self.select[i] = diff
-        self.select[self.playerIndex] = -52
-        # print(self.select)
-        self.nightCount = 0
-        while self.scores[playerIndex] != 0 and self.playerCount != 1:
-            # print(self.playerCount)
+class Game():
+    def __init__(self, playerCount, scores, arr, mafiaIndex):
+        self.playerCount = playerCount    # 게임 플레이어 수
+        self.initScores = scores          # 초기 점수
+        self.arr = arr                    # 죽었을 경우 점수
+        self.mafiaIndex = mafiaIndex      # 마피아 인덱스
+        self.nightCount = 0               # 저녁 카운트
+        self.initSetting()                # 초기화
+        self.maxCount = int(self.playerCount / 2)
+        if self.nightCount:
+            self.nightCount = 0
+        else:
             self.play()
 
-    def play(self):
-        if self.playerCount % 2 == 0:
-            self.nightCount += 1
-            # 짝수 일 경우 밤 마피아 -> 시민 죽임
-            # 내 점수를 낮출 수 있는 사람을 죽임
-            # 1. 내 점수가 가장 낮아 질 수 있는 경우를 선택
-            index = -1
-            if self.select.count(max(self.select)) == 1:
-                index = self.select.index(max(self.select))
-            # 2. 점수가 동일한 경우 점수가 낮은 사람을 죽임
-            else:
-                score = max(self.scores)
-                select = max(self.select)
-                index = self.select.index(select)
-                for i in range(len(self.scores)):
-                    if i != self.playerIndex and select == self.select[i]:
-                        if score > self.scores[i]:
-                            score = self.scores[i]
-                            index = i
-            # i = 죽일 사람 인덱스
-            # print('night : ', index, ' is dead')
-            self.scores[index] = 0
-            for j in range(len(self.scores)):
-                if self.scores[j] != 0:
-                    self.scores[j] += self.relativeScore[index][j]
-            self.select[index] = -52
-            self.playerCount -= 1
-        else:
-            # 홀수 일 경우 낮 시민 -> 점수가 높은 사람 죽임
-            index = self.scores.index(max(self.scores))
-            # print('day : ', index, ' is dead')
-            self.scores[index] = 0
-            self.select[index] = -52
-            self.playerCount -= 1
+    def initSetting(self):
+        # 플레이어 수가 홀수 일 경우 낮, 점수가 가장 높고, 동일한 경우 인덱스가 빠른 사람이 죽음
+        if self.playerCount % 2 == 1:
+            index = self.initScores.index(max(self.initScores))
+            # 마피아가 처음부터 죽는 경우
+            if index == self.mafiaIndex:
+                self.nightCount += 1
+                return
+            self.initScores[index] = 0
+        
+        self.killingList = []
+        self.scores = []
+        for _ in range(int(self.playerCount / 2) + 1):
+            self.killingList.append([1] * self.playerCount)
+            self.scores.append([0] * self.playerCount)
+        for i in range(self.playerCount):
+            self.scores[0][i] = self.initScores[i]
+            if self.initScores[i] == 0:
+                self.killingList[0][i] = 0
+        self.killingList[0][self.mafiaIndex] = 0
+    
+    def play(self, nightCount = 0):
+        # print(self.killingList[nightCount])
+        # print(self.scores[nightCount])
+        # 밤일 경우 임의의 대상을 죽임
+        nightCount += 1
+        if self.nightCount < nightCount:
+            self.nightCount = nightCount
+        for i in range(self.playerCount):
+            if self.nightCount == self.maxCount:
+                return
+            for j in range(self.playerCount):
+                self.killingList[nightCount][j] = self.killingList[nightCount - 1][j]
+            # 사람을 죽일 경우
+            if self.killingList[nightCount - 1][i] == 1:
+                self.killingList[nightCount][i] = 0
+                for j in range(self.playerCount):
+                    if j == i:
+                        self.scores[nightCount][j] = 0
+                    elif self.scores[nightCount - 1][j] != 0:
+                        self.scores[nightCount][j] = self.scores[nightCount - 1][j] + self.arr[i][j]
+                # 낮 점수가 높음 사람이 죽음
+                index = self.scores[nightCount].index(max(self.scores[nightCount]))
+                if index == self.mafiaIndex:
+                    continue
+                self.killingList[nightCount][index] = 0
+                for j in range(self.playerCount):
+                    if j == index:
+                        self.scores[nightCount][j] = 0
+                    elif self.scores[nightCount][j] != 0:
+                        self.scores[nightCount][j] += self.arr[i][j]
+                self.play(nightCount)
 
-    def getNightCount(self):
-        return self.nightCount
+    def getCount(self):
+        return self.nightCount                
 
 if __name__=='__main__':
     playerCount = int(sys.stdin.readline())
     scores = list(map(int, sys.stdin.readline().strip().split(' ')))
-    relativeScore = []
-    for i in range(playerCount):
-        relativeScore.append(list(map(int, sys.stdin.readline().strip().split(' '))))
-    playerIndex = int(sys.stdin.readline()) - 1
-    mafia = Mafia(playerCount, scores, relativeScore, playerIndex)
-    print(mafia.getNightCount())
+    arr = []
+    for _ in range(playerCount):
+        arr.append(list(map(int, sys.stdin.readline().strip().split(' '))))
+    mafiaIndex = int(sys.stdin.readline())
+    game = Game(playerCount, scores, arr, mafiaIndex)
+    print(game.getCount())
