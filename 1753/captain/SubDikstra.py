@@ -6,7 +6,7 @@ class Path():
         self.inf = 200001
         self.result = [int(self.inf)] * (self.V + 1) # 각 노드까지 가는 최단거리
         self.paths = paths
-        self.startNode = startNode - 1
+        # self.startNode = startNode - 1
         self.result[startNode] = 0
         self.priorityQueue = queue.PriorityQueue(maxsize = 300001)
         self.priorityQueue.put([0, startNode])

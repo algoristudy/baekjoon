@@ -8,14 +8,14 @@ class Path():
         for i in range(self.V):
             self.path[i][i] = 0
         for case in self.cases:
-            # print('\n case : ', case)
+            print('\n case : ', case)
             start = case[0] - 1
             end = case[1] - 1
             value = case[2]
             if self.path[start][end] == -1 or self.path[start][end] > value:
                 self.setPath(case[0] - 1, case[1] - 1, value)
-            # for path in self.path:
-            #     print(path)
+            for path in self.path:
+                print(path)
 
     def setPath(self, start, end, value):
         # print('setPath, start : ', start, ', end  : ', end, ', value : ', value)
