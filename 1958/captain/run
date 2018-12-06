@@ -1,0 +1,15 @@
+#!/bin/zsh
+# 작성자 captain
+INPUT_FILE=$1                       # 첫번째 인자
+FILE_NAME="$(pwd)/$INPUT_FILE"      # 명령을 실행하는 디렉터리
+if [ -f "$FILE_NAME" ]; then        # 파일이 존재할 경우
+    if [ "${FILE_NAME##*.}" = "cpp" ]; then  # 확장자 분리 후 비교
+        # EXEC_PATH="${FILE_NAME%/*}"          # 실행 파일 경로 분리
+        # EXEC_NAME="${FILE_NAME%.*}"          # 실행 파일 이름 분리(확장자 제거)
+        g++ -o ${FILE_NAME%.*} $FILE_NAME && ${FILE_NAME%.*};
+    else
+        echo "This file is not cpp file. please, choose c++ source file."
+    fi
+else                               # 파일이 존재하지 않을 경우
+    echo "Invalid file name. please, check your command."
+fi
