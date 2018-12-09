@@ -1,38 +1,37 @@
-// Problem Link: https://www.acmicpc.net/problem/1958
-// This problem involves finding the LCS of 3 strings. 
-// We just simply modify the recursive relationship and apply the iterative DP approach. 
-#include <iostream> 
-#include <cstdlib> 
-#include <algorithm> 
-#include <string> 
-using namespace std; 
- 
-int LCS[101][101][101];  
- 
-int Len(string s1, string s2, string s3){
-    int l = (int)s1.size(); 
-    int m = (int)s2.size();  
-    int n = (int)s3.size();  
-    for (int i = l; i >= 0; i--){
-        for (int j = m; j >= 0; j--){
-            for (int k = n; k >= 0; k--){
-                if (i == l || j == m || k == n){
-                    LCS[i][j][k] = 0;  
-                } else if (s1[i] == s2[j] && s1[i] == s3[k]){
-                    LCS[i][j][k] = 1+LCS[i+1][j+1][k+1];  
-                } else{
-                    LCS[i][j][k] = max(LCS[i+1][j][k],max(LCS[i][j+1][k],LCS[i][j][k+1]));  
+#include <iostream>
+#include <cstdlib>
+#include <algorithm>
+#include <string>
+#include <cstdio>
+
+using namespace std;
+
+int DP[101][101][101];
+
+int max(int a, int b) {
+    return a > b ? a : b;
+}
+
+int LCS(string str1, string str2, string str3) {
+    int i, j, k;
+    for (i = 1; i < str1.size() + 1; i++) {
+        for (j = 1; j < str2.size() + 1; j++) {
+            for (k = 1; k < str3.size() + 1; k++) {
+                if (str1[i - 1] == str2[j - 1] && str1[i - 1] == str3[k - 1]) {
+                    DP[k][j][i] = DP[k - 1][j - 1][i - 1] + 1;
+                } else {
+                    DP[k][j][i] = max(DP[k - 1][j][i], max(DP[k][j - 1][i], DP[k][j][i - 1]));
                 }
             }
         }
     }
-    return LCS[0][0][0];  
+    return DP[--k][--j][--i];
 }
- 
-int main(){
-    string s1,s2,s3; 
-    cin >> s1 >> s2 >> s3;  
-    int ans = Len(s1,s2,s3); 
-    cout << ans << endl;  
-    return 0;  
+
+int main() {
+    string str1, str2, str3;
+    cin >> str1 >> str2 >> str3;
+    int count = LCS(str1, str2, str3);
+    cout << count << endl;
+    return 0;
 }
