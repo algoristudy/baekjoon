@@ -9,7 +9,7 @@ def bfs():
     x = current[1]
     y = current[2]
     d = current[3]
-    # print('\ncount : {0}, x : {1}, y : {2}, d: {3}'.format(count, x, y, d))
+    print('\ncount : {0}, x : {1}, y : {2}, d: {3}'.format(count, x, y, d))
     if x == gx and y == gy:
         print(count if d == gd else count + 1)
         while not queue.empty():
@@ -52,7 +52,6 @@ if __name__=='__main__':
         board = []
         for _ in range(M):
             board.append(list(map(int, f.readline().strip().split(' '))))
-        # visit = [[[0, 0, 0, 0] for _ in range(N)] for _ in range(M)]
         start = list(map(int, f.readline().strip().split(' ')))
         goal = list(map(int, f.readline().strip().split(' ')))
         gx = goal[1] - 1
@@ -63,3 +62,5 @@ if __name__=='__main__':
         queue.put([0, start[1] - 1, start[0] - 1, direct(start[2])])
         while not queue.empty():
             bfs()
+            for b in board:
+                print(b)

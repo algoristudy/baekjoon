@@ -6,7 +6,7 @@ using namespace std;
 
 int k, w, h;
 int board[201][201];
-int visit[201][201][31];
+bool visit[201][201][31];
 int dx[] = {1, -1, 0, 0};
 int dy[] = {0, 0, 1, -1};
 int kdx[] = {2, 2, -2, -2, 1, 1, -1, -1};
@@ -25,7 +25,6 @@ int bfs(int k) {
 
     while (!q.empty()) {
         position cur = q.front();
-        printf("\n\nx: %d, y: %d, k: %d, cnt: %d\n", cur.x, cur.y, cur.k, cur.cnt);
         q.pop();
 
         if (cur.x < 0 || cur.y < 0 || cur.x >= w || cur.y >= h || board[cur.y][cur.x]) continue; // 범위를 벗어나거나, 장애물로 갈 수 없는 경우
@@ -33,17 +32,7 @@ int bfs(int k) {
         if (cur.x == w - 1 && cur.y == h - 1) return cur.cnt; // 목적지에 도착하였을 경우 카운트
 
         if (visit[cur.y][cur.x][cur.k]) continue;
-        visit[cur.y][cur.x][cur.k] = cur.cnt == 0 ? -1 : cur.cnt;
-
-        for (int i = 0; i < 3; i++) {
-            printf("\nk : %d \n", i);
-            for (int j = 0; j < 4; j++) {
-                for (int l = 0; l < 4; l++) {
-                    printf("%d ", visit[j][l][i]);
-                }
-                printf("\n");
-            }
-        }
+        visit[cur.y][cur.x][cur.k] = true;
 
         for (int i = 0; i < 4; i++) {
             int nx = cur.x + dx[i];
