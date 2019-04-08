@@ -20,7 +20,8 @@ int main() {
       else if (j == 2) result[i][j] = house_cost[i][j] + min(result[i - 1][0], result[i - 1][1]);
     }
   }
-  int answer = result[n - 1][0] < result[n - 1][1] ? min(result[n - 1][0], result[n - 1][2]) : min(result[n - 1][1], result[n - 1][2]);
+  n--;
+  int answer = result[n][0] < result[n][1] ? min(result[n][0], result[n][2]) : min(result[n][1], result[n][2]);
   printf("%d\n", answer);
   return 0;
 }
